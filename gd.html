@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Launcher Page</title>
+</head>
+<body>
+  <h1>Welcome to the Launcher Page</h1>
+  <p>Select an option below:</p>
+
+  <form>
+    <input type="radio" id="option1" name="redirect" value="https://suprewing007.github.io/gdcr/index.html">
+    <label for="option1">cr</label><br>
+    <input type="radio" id="option2" name="redirect" value="https://suprewing007.github.io/gd/index.html">
+    <label for="option2">gd-champions</label><br>
+    <input type="radio" id="option3" name="redirect" value="https://suprewing007.github.io/comingsoon.html">
+    <label for="option3">Coming soon!</label><br>
+
+    <input type="button" value="Go" onclick="redirectPage()">
+  </form>
+
+  <script>
+    function redirectPage() {
+      var radios = document.getElementsByName("redirect");
+      var selectedOption;
+      
+      for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+          selectedOption = radios[i].value;
+          break;
+        }
+      }
+
+      if (selectedOption) {
+        window.location.href = selectedOption;
+      }
+    }
+  </script>
+</body>
+</html>
