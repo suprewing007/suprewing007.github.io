@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>3D FPS Game with Mobile Controls</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #game-container {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+    <script>
+      // Set up the scene, camera, and renderer
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      var renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.getElementById("game-container").appendChild(renderer.domElement);
+
+      // Add a cube to the scene
+      var geometry = new THREE.BoxGeometry();
+      var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      var cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+
+      // Set up device orientation controls
+      var controls = new THREE.DeviceOrientationControls(camera);
+
+      // Create a floor
+      var floorGeometry = new THREE.PlaneGeometry(10, 10);
+      var floorMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+      var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+      floor.rotation.x = -Math.PI / 2;
+      scene.add(floor);
+
+      // Handle window resize event
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      window.addEventListener("resize", onWindowResize, false);
+
+      // Game loop
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // Rotate the cube
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+
+        // Update the controls
+        controls.update();
+
+        // Render the scene
+        renderer.render(scene, camera);
+      }
+      animate();
+    </script>
+  </body>
+</html>
