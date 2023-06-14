@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EasyInstallerGUI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fff;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("https://cdn.jsdelivr.net/gh/GoogleChrome/developer.chrome.com/webstore/images/package_icon.svg");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
+    }
+    
+    .btn-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    
+    .btn-download {
+      display: inline-block;
+      background-color: #4caf50;
+      color: #fff;
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    
+    .btn-download:hover {
+      background-color: #45a049;
+    }
+    
+    /* Light Mode */
+    body.light-mode {
+      background-color: #f7f7f7;
+    }
+    
+    body.light-mode .container {
+      background-color: #fff;
+      color: #333;
+    }
+    
+    body.light-mode h1 {
+      color: #333;
+    }
+    
+    body.light-mode select {
+      background-color: #fff;
+      color: #333;
+      border-color: #ccc;
+    }
+    
+    body.light-mode .btn-download {
+      background-color: #4caf50;
+    }
+    
+    /* Dark Mode */
+    body.dark-mode {
+      background-color: #333;
+    }
+    
+    body.dark-mode .container {
+      background-color: #444;
+      color: #fff;
+    }
+    
+    body.dark-mode h1 {
+      color: #fff;
+    }
+    
+    body.dark-mode select {
+      background-color: #444;
+      color: #fff;
+      border-color: #555;
+    }
+    
+    body.dark-mode .btn-download {
+      background-color: #1e7d39;
+    }
+    
+    /* Midnight Mode */
+    body.midnight-mode {
+      background-color: #000;
+      color: #fff;
+    }
+    
+    body.midnight-mode .container {
+      background-color: #111;
+      color: #fff;
+    }
+    
+    body.midnight-mode h1 {
+      color: #fff;
+    }
+    
+    body.midnight-mode select {
+      background-color: #111;
+      color: #fff;
+      border-color: #222;
+    }
+    
+    body.midnight-mode .btn-download {
+      background-color: #009688;
+    }
+    
+    /* Clock */
+    .clock {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 14px;
+      color: #999;
+    }
+  </style>
+  <script>
+    function downloadFile() {
+      var dropdown = document.getElementById("fileDropdown");
+      var fileUrl = dropdown.value;
+      if (fileUrl !== "") {
+        window.open(fileUrl, "_blank");
+      }
+    }
+    
+    function toggleMode(mode) {
+      var body = document.body;
+      body.classList.remove("light-mode", "dark-mode", "midnight-mode");
+      body.classList.add(mode);
+    }
+    
+    function updateTime() {
+      var clock = document.getElementById("clock");
+      var date = new Date();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var seconds = date.getSeconds();
+      var time = hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
+      clock.textContent = time;
+    }
+    
+    setInterval(updateTime, 1000);
+  </script>
+</head>
+<body class="light-mode">
+  <div class="mode-toggle">
+    <span onclick="toggleMode('light-mode')">Light Mode</span>
+    <span onclick="toggleMode('dark-mode')">Dark Mode</span>
+    <span onclick="toggleMode('midnight-mode')">Midnight Mode</span>
+  </div>
+  
+  <div class="container">
+    <h1>EasyInstallerGUI</h1>
+    
+    <select id="fileDropdown">
+      <option value="">Select a file to download</option>
+      <option value="https://cdn.fnbuilds.services/4.1.zip">++Fortnite+Release-4.1-CL-4053532-Windows</option>
+      <option value="https://cdn.fnbuilds.services/7.40.rar">++Fortnite+Release-7.40-CL-5046157-Windows</option>
+      <option value="https://cdn.fnbuilds.services/8.40.zip">++Fortnite+Release-8.40-CL-6005771-Windows</option>
+      <option value="https://cdn.fnbuilds.services/8.51.rar">++Fortnite+Release-8.51-CL-6058028-Windows</option>
+      <option value="https://cdn.fnbuilds.services/9.00.zip">++Fortnite+Release-9.00-CL-6337466-Windows</option>
+      <option value="https://cdn.fnbuilds.services/9.10.rar">++Fortnite+Release-9.10-CL-6639283-Windows</option>
+      <option value="https://cdn.fnbuilds.services/9.41.rar">++Fortnite+Release-9.41-CL-7609292-Windows</option>
+      <option value="https://cdn.fnbuilds.services/10.00.zip">++Fortnite+Release-10.00-CL-7658179-Windows</option>
+      <option value="https://cdn.fnbuilds.services/10.40.rar">++Fortnite+Release-10.40-CL-9380822-Windows</option>
+      <option value="https://cdn.fnbuilds.services/11.31.rar">++Fortnite+Release-11.31-CL-10800459-Windows</option>
+      <option value="https://cdn.fnbuilds.services/12.00.rar">++Fortnite+Release-12.00-CL-11586896-Windows</option>
+      <option value="https://cdn.fnbuilds.services/12.21.zip">++Fortnite+Release-12.21-CL-12236980-Windows</option>
+      <option value="https://cdn.fnbuilds.services/12.41.rar">++Fortnite+Release-12.41-CL-12905909-Windows</option>
+      <option value="https://cdn.fnbuilds.services/12.50.zip">++Fortnite+Release-12.50-CL-13193885-Windows</option>
+      <option value="https://cdn.fnbuilds.services/12.61.zip">++Fortnite+Release-12.61-CL-13498980-Windows</option>
+      <option value="https://cdn.fnbuilds.services/14.40.rar">++Fortnite+Release-14.40-CL-14550713-Windows</option>
+      <option value="https://cdn.fnbuilds.services/14.60.rar">++Fortnite+Release-14.60-CL-14786821-Windows</option>
+      <option value="https://cdn.fnbuilds.services/15.30.rar">++Fortnite+Release-15.30-CL-15341163-Windows</option>
+      <option value="https://cdn.fnbuilds.services/16.40.rar">++Fortnite+Release-16.40-CL-16218553-Windows</option>
+      <option value="https://cdn.fnbuilds.services/17.30.zip">++Fortnite+Release-17.30-CL-17004569-Windows</option>
+    </select>
+    
+    <div class="btn-container">
+      <button class="btn-download" onclick="downloadFile()">Download</button>
+    </div>
+  </div>
+  
+  <div class="clock" id="clock"></div>
+  
+  <script>
+    function downloadFile() {
+      var dropdown = document.getElementById("fileDropdown");
+      var fileUrl = dropdown.value;
+      if (fileUrl !== "") {
+        var a = document.createElement("a");
+        a.href = fileUrl;
+        a.download = "EasyInstallerGUI.zip";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    }
+  </script>
+</body>
+</html>
