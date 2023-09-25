@@ -1,0 +1,8 @@
+Minecraft JS port -
+
+Mojang - making Minecraft
+
+original js port project
+by: 
+
+https://github.com/LabyStudio/js-minecraft
