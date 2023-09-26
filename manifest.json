@@ -1,0 +1,18 @@
+}
+
+  "background_color": "#ffffff",
+  "description": "A web app.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "suprewing007",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "suprewing007",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "categories": [],
+  "screenshots": [],
+  "icons": [],
+  "shortcuts": [],
+  "id": "superlauncher.org.117"
+}
