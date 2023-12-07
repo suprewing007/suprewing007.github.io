@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Battle Royale</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const player = {
+            x: 400,
+            y: 300,
+            size: 20,
+            color: 'blue'
+        };
+
+        const bots = [];
+        const botCount = 5;
+
+        for (let i = 0; i < botCount; i++) {
+            bots.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: 20,
+                color: 'red'
+            });
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawBots() {
+            bots.forEach(bot => {
+                ctx.fillStyle = bot.color;
+                ctx.beginPath();
+                ctx.arc(bot.x, bot.y, bot.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function checkCollision(obj1, obj2) {
+            const distance = Math.hypot(obj1.x - obj2.x, obj1.y - obj2.y);
+            return distance < obj1.size + obj2.size;
+        }
+
+        function update() {
+            // Move player with touch or click input (not implemented)
+            // Update AI bot movements (simple random movement)
+            bots.forEach(bot => {
+                bot.x += Math.random() * 4 - 2;
+                bot.y += Math.random() * 4 - 2;
+            });
+
+            // Check collisions with bots
+            bots.forEach(bot => {
+                if (checkCollision(player, bot)) {
+                    alert('Game Over! You were eliminated.');
+                    location.reload(); // Refresh the page to restart
+                }
+            });
+
+            // Draw everything
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            drawBots();
+
+            requestAnimationFrame(update);
+        }
+
+        // Start the game loop
+        update();
+    </script>
+</body>
+</html>
