@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Battle Royale</title>
+    <title>Mobile Battle Royale</title>
     <style>
         body {
             margin: 0;
@@ -63,7 +63,13 @@
         }
 
         function update() {
-            // Move player with touch or click input (not implemented)
+            // Move player with touch input
+            canvas.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                player.x = touch.clientX;
+                player.y = touch.clientY;
+            });
+
             // Update AI bot movements (simple random movement)
             bots.forEach(bot => {
                 bot.x += Math.random() * 4 - 2;
