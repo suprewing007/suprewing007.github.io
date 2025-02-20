@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BibleTok</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+      color: #000000;
+      transition: background-color 0.3s, color 0.3s;
+      overflow: hidden; /* Prevent webpage scrolling */
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #ffffff;
+    }
+    #app {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Controls (Top Bar) */
+    .controls {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    }
+    .dark-mode .controls {
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #ffffff;
+      transition: background-color 0.3s, transform 0.2s;
+      flex: 1 1 auto; /* Allow buttons to grow and shrink */
+      margin: 5px; /* Add spacing between buttons */
+    }
+    button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    select {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      background-color: #f0f0f0;
+      color: #000000;
+      flex: 1 1 auto; /* Allow dropdown to grow and shrink */
+      margin: 5px; /* Add spacing */
+      max-width: 150px; /* Limit dropdown width */
+    }
+    .dark-mode select {
+      background-color: #333;
+      color: #ffffff;
+    }
+
+    /* Verse Feed (Centered) */
+    .verse-feed {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+    .verse {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+      max-width: 90%;
+    }
+    .reference {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .dark-mode .reference {
+      color: #aaa;
+    }
+    .explanation {
+      font-size: 1rem;
+      color: #888;
+      margin-top: 20px;
+      display: none; /* Hidden by default */
+      max-width: 90%;
+    }
+    .explanation.visible {
+      display: block;
+    }
+
+    /* Heart Animation */
+    .heart-animation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 5rem;
+      color: red;
+      opacity: 0;
+      pointer-events: none;
+      animation: heartBeat 0.8s ease-out;
+    }
+    @keyframes heartBeat {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* Favorites Menu */
+    .favorites-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: #ffffff;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .favorites-menu.active {
+      display: flex;
+    }
+    .favorites-menu .close-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+    }
+    .favorites-menu h2 {
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    .favorites-list {
+      width: 90%;
+      max-height: 70vh;
+      overflow-y: auto;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .favorite-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .favorite-item:last-child {
+      border-bottom: none;
+    }
+    .favorite-item .verse {
+      font-size: 1.2rem;
+      margin: 0;
+      max-width: 80%;
+    }
+    .favorite-item .remove-button {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .favorite-item .remove-button:hover {
+      background-color: #cc0000;
+    }
+
+    /* Add to Home Screen Button */
+    .add-to-home-screen {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: none; /* Hidden by default */
+    }
+    .add-to-home-screen.visible {
+      display: block;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .hidden {
+      display: none;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Controls (Top Bar) -->
+    <div class="controls">
+      <select id="bible-version">
+        <option value="KJV">KJV</option>
+        <option value="NIV">NIV</option>
+        <option value="NLT">NLT</option>
+      </select>
+      <button id="dark-mode-toggle">Dark Mode</button>
+      <button id="view-favorites">View Favorites</button>
+      <button id="toggle-explanation">Show Explanation</button>
+    </div>
+
+    <!-- Verse Feed (Centered) -->
+    <div class="verse-feed">
+      <div class="loading-spinner hidden" id="loading-spinner"></div>
+      <div class="verse" id="verse-text">Loading verse...</div>
+      <div class="reference" id="verse-reference"></div>
+      <div class="explanation" id="verse-explanation"></div>
+      <div class="heart-animation" id="heart-animation">❤️</div>
+    </div>
+
+    <!-- Favorites Menu -->
+    <div class="favorites-menu" id="favorites-menu">
+      <div class="close-button" id="close-favorites">✕</div>
+      <h2>Favorites</h2>
+      <div class="favorites-list" id="favorites-list"></div>
+    </div>
+
+    <!-- Add to Home Screen Button -->
+    <button class="add-to-home-screen" id="add-to-home-screen">Add to Home Screen</button>
+  </div>
+
+  <script>
+    const verseText = document.getElementById('verse-text');
+    const verseReference = document.getElementById('verse-reference');
+    const verseExplanation = document.getElementById('verse-explanation');
+    const bibleVersionSelect = document.getElementById('bible-version');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const viewFavoritesButton = document.getElementById('view-favorites');
+    const toggleExplanationButton = document.getElementById('toggle-explanation');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const heartAnimation = document.getElementById('heart-animation');
+    const favoritesMenu = document.getElementById('favorites-menu');
+    const closeFavoritesButton = document.getElementById('close-favorites');
+    const favoritesList = document.getElementById('favorites-list');
+    const addToHomeScreenButton = document.getElementById('add-to-home-screen');
+    const body = document.body;
+    const verseFeedTab = document.querySelector('.verse-feed');
+
+    let currentVerse = {};
+    let touchStartY = 0;
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    // Fetch a random Bible verse
+    async function fetchVerse(version) {
+      if (version === "KJV") {
+        // Use Bible API for KJV
+        const books = ["Genesis", "Psalms", "John", "Matthew", "Romans"];
+        const randomBook = books[Math.floor(Math.random() * books.length)];
+        const randomChapter = Math.floor(Math.random() * 20) + 1;
+        const randomVerse = Math.floor(Math.random() * 20) + 1;
+
+        const url = `https://bible-api.com/${randomBook}+${randomChapter}:${randomVerse}?translation=${version}`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          return { text: data.text, reference: data.reference, explanation: "" };
+        } catch (error) {
+          console.error("Error fetching verse:", error);
+          return { text: "Error loading verse. Please try again.", reference: "N/A", explanation: "" };
+        }
+      } else {
+        // Use a paid API for NIV and NLT (replace with your API key and endpoint)
+        const apiKey = "YOUR_PAID_API_KEY"; // Replace with your API key
+        const books = ["Genesis", "Psalms", "John", "Matthew", "Romans"];
+        const randomBook = books[Math.floor(Math.random() * books.length)];
+        const randomChapter = Math.floor(Math.random() * 20) + 1;
+        const randomVerse = Math.floor(Math.random() * 20) + 1;
+
+        const url = `https://api.youversion.com/v1/verse?book=${randomBook}&chapter=${randomChapter}&verse=${randomVerse}&version=${version}&key=${apiKey}`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          return { text: data.text, reference: data.reference, explanation: "" };
+        } catch (error) {
+          console.error("Error fetching verse:", error);
+          return { text: "Error loading verse. Please try again.", reference: "N/A", explanation: "" };
+        }
+      }
+    }
+
+    // In-house AI explanation system
+    function generateExplanation(verse) {
+      const keywords = [
+        { word: "love", explanation: "This verse is about how much God loves us. He wants us to love others too!" },
+        { word: "trust", explanation: "This verse reminds us to trust God with all our hearts, even when things are hard." },
+        { word: "faith", explanation: "This verse teaches us about faith. Faith means believing in God even when we can't see Him." },
+        { word: "hope", explanation: "This verse gives us hope. Hope means believing that good things will happen because of God." },
+        { word: "Jesus", explanation: "This verse talks about Jesus. He is God's Son, and He came to save us." },
+        { word: "eternal life", explanation: "This verse tells us about eternal life. Eternal life means living forever with God in heaven." },
+      ];
+
+      // Find a matching keyword
+      for (const { word, explanation } of keywords) {
+        if (verse.toLowerCase().includes(word)) {
+          return explanation;
+        }
+      }
+
+      // Fallback explanation
+      return "This verse reminds us to trust God and follow His ways. He loves us and wants the best for us!";
+    }
+
+    // Load a new verse
+    async function loadVerse() {
+      loadingSpinner.classList.remove('hidden');
+      verseText.textContent = "Loading...";
+      verseReference.textContent = "";
+      verseExplanation.textContent = "";
+      verseExplanation.classList.remove('visible');
+      toggleExplanationButton.textContent = "Show Explanation"; // Reset button text
+
+      const version = bibleVersionSelect.value;
+      const verseData = await fetchVerse(version);
+      currentVerse = verseData;
+      verseText.textContent = verseData.text;
+      verseReference.textContent = verseData.reference;
+      loadingSpinner.classList.add('hidden');
+    }
+
+    // Show heart animation
+    function showHeartAnimation() {
+      heartAnimation.style.opacity = 1;
+      setTimeout(() => {
+        heartAnimation.style.opacity = 0;
+      }, 800);
+    }
+
+    // Save verse to favorites
+    function saveFavorite() {
+      if (!favorites.some(fav => fav.reference === currentVerse.reference)) {
+        favorites.push(currentVerse);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        showHeartAnimation();
+      }
+    }
+
+    // Remove verse from favorites
+    function removeFavorite(index) {
+      favorites.splice(index, 1);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      showFavoritesMenu(); // Refresh the favorites list
+    }
+
+    // Show favorites menu
+    function showFavoritesMenu() {
+      favoritesList.innerHTML = favorites.map((fav, index) => `
+        <div class="favorite-item">
+          <div class="verse">${fav.text} (${fav.reference})</div>
+          <button class="remove-button" onclick="removeFavorite(${index})">Remove</button>
+        </div>
+      `).join('');
+      favoritesMenu.classList.add('active');
+    }
+
+    // Close favorites menu
+    function closeFavoritesMenu() {
+      favoritesMenu.classList.remove('active');
+    }
+
+    // Toggle explanation visibility
+    function toggleExplanation() {
+      const isVisible = verseExplanation.classList.toggle('visible');
+      toggleExplanationButton.textContent = isVisible ? "Hide Explanation" : "Show Explanation";
+      if (isVisible) {
+        verseExplanation.textContent = currentVerse.explanation || generateExplanation(currentVerse.text);
+      }
+    }
+
+    // Double-tap to favorite
+    verseFeedTab.addEventListener('dblclick', saveFavorite);
+
+    // Swipe gesture logic
+    verseFeedTab.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    });
+
+    verseFeedTab.addEventListener('touchend', (e) => {
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaY = touchEndY - touchStartY;
+
+      if (deltaY < -50) {
+        // Swipe up
+        loadVerse();
+      }
+    });
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+      body.classList.toggle('dark-mode');
+    }
+
+    // Add to Home Screen (PWA)
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      addToHomeScreenButton.classList.add('visible');
+    });
+
+    addToHomeScreenButton.addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          deferredPrompt = null;
+          addToHomeScreenButton.classList.remove('visible');
+        });
+      }
+    });
+
+    // Event listeners
+    bibleVersionSelect.addEventListener('change', loadVerse);
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+    viewFavoritesButton.addEventListener('click', showFavoritesMenu);
+    closeFavoritesButton.addEventListener('click', closeFavoritesMenu);
+    toggleExplanationButton.addEventListener('click', toggleExplanation);
+
+    // Load the first verse on startup
+    loadVerse();
+  </script>
+</body>
+</html>
